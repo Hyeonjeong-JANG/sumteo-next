@@ -50,10 +50,26 @@ export function useAuth(){
             }
             setLoading(false);
         };
+
+        // 로그아웃
+        const signOut = async () => {
+            setLoading(true);
+            setError(null);
+            const response = await fetch('/api/auth/logout', { method: 'POST' });
+          
+            if (!response.ok) {
+              setError('로그아웃에 실패했습니다.');
+            } else {
+              router.push('/signin');
+              router.refresh();
+            }
+            setLoading(false);
+          };
         
     return {
         signUp,
         signIn,
+        signOut,
         loading,
         error,
     }
