@@ -3,6 +3,7 @@ import { createClient } from '../../../../../lib/supabase/server';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(request: NextRequest){
+    console.log("API 호출됨");
     const supabase = await createClient();
     const {email, password} = await request.json();
 
@@ -20,7 +21,7 @@ export async function POST(request: NextRequest){
         );
     }
 
-    const {error}=await supabase.auth.signUp({
+    const {error} = await supabase.auth.signUp({
         email,
         password,
     });
