@@ -1,4 +1,5 @@
 import { LogoutButton } from '../../../feature/auth/components/LogoutButton';
+import { Space } from '../../../feature/space/components/Space';
 import { createClient } from '../../../../lib/supabase/server';
 import { redirect } from 'next/navigation';
 
@@ -11,7 +12,7 @@ export default async function SpacePage() {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return redirect('/login');
+    return redirect('/signin');
   }
 
   return (
@@ -22,20 +23,7 @@ export default async function SpacePage() {
       </p>
       <LogoutButton />
 
-      {/* 여기에 나중에 2D 메타버스 공간이 들어옵니다. */}
-      <div
-        style={{
-          marginTop: '20px',
-          width: '100%',
-          height: '60vh',
-          border: '1px solid #ccc',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
-      >
-        <p>메타버스 공간</p>
-      </div>
+      <Space userId={user.id} />
     </div>
   );
 }
