@@ -1,6 +1,6 @@
 'use client';
 
-import { useSpacePresence } from '../../auth/hooks/useSpacePresence';
+import { useSpacePresence } from '../hooks/useSpacePresence';
 import { UserPresenceList } from './UserPresenceList';
 
 // 페이지에서 로그인된 사용자의 ID를 props로 받음
