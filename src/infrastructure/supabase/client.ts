@@ -1,4 +1,4 @@
-// lib/supabase.ts
+// 클라이언트를 생성하고 초기화하는 파일
 import { createClient } from '@supabase/supabase-js'
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
