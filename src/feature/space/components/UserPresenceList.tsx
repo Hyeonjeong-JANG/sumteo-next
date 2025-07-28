@@ -3,6 +3,7 @@
 type PresenceState = {
     user_id: string;
     is_reading: boolean;
+    username: string;
 };
 
 interface UserPresenceListProps {
@@ -18,7 +19,7 @@ export function UserPresenceList({ users }: UserPresenceListProps) {
       <ul>
         {users.map((user) => (
           <li key={user.user_id}>
-            {user.user_id} - {user.is_reading ? '🟢 독서 중' : '🔴 딴짓 중'}
+            {user.username} - {user.is_reading ? '🟢 독서 중' : '🔴 딴짓 중'}
           </li>
         ))}
       </ul>

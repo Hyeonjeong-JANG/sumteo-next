@@ -15,15 +15,21 @@ export default async function SpacePage() {
     return redirect('/signin');
   }
 
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('username')
+    .eq('id', user.id)
+    .single();
+
   return (
     <div>
       <h1>숨터에 오신 것을 환영합니다!</h1>
       <p>
-        로그인된 사용자: <strong>{user.email}</strong>
+        로그인된 사용자: <strong>{profile?.username}</strong>
       </p>
       <LogoutButton />
 
-      <Space userId={user.id} />
+      <Space userId={user.id} username={profile?.username || ''} />
     </div>
   );
 }
