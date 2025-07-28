@@ -22,7 +22,7 @@ export function useAuth(){
             if(!response.ok){
                 setError(data.error || "회원가입에 실패했습니다")
             }else{
-                alert('회원가입 성공! 로그인 페이지로 이동합니다.');
+                alert('회원가입 성공!\n 이메일에서 확인을 누르면 로그인 할 수 있습니다.\n로그인 페이지로 이동합니다.'); // TODO: 말이 이상함
                 router.push('/signin');
             }
             setLoading(false);

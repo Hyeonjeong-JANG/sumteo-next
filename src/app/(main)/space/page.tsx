@@ -1,7 +1,7 @@
 import { LogoutButton } from '../../../feature/auth/components/LogoutButton';
 import { Space } from '../../../feature/space/components/Space';
 import { createClient } from '../../../../lib/supabase/server';
-import { redirect } from 'next/navigation';
+import { Profile } from '../../../shared/types';
 
 export default async function SpacePage() {
   const supabase = await createClient();
@@ -11,15 +11,14 @@ export default async function SpacePage() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!user) {
-    return redirect('/signin');
-  }
-
-  const { data: profile } = await supabase
+  // user가 있을 때만 프로필 정보를 가져옴
+  const { data: profile } = user
+  ? await supabase
     .from('profiles')
     .select('username')
     .eq('id', user.id)
-    .single();
+    .single()
+    : { data: null };
 
   return (
     <div>
@@ -29,7 +28,7 @@ export default async function SpacePage() {
       </p>
       <LogoutButton />
 
-      <Space userId={user.id} username={profile?.username || ''} />
+      <Space user = {user} profile = {profile as Profile} />
     </div>
   );
 }

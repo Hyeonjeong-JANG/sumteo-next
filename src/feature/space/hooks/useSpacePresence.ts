@@ -10,7 +10,7 @@ type PresenceState = {
     username: string;
 };
 
-export function useSpacePresence(userId: string, username: string) {
+export function useSpacePresence(userId?: string, username?: string) {
     const [presentUsers, setPresentUsers] = useState<PresenceState[]>([]);
     const channelRef = useRef<RealtimeChannel | null>(null);
 
@@ -30,7 +30,7 @@ export function useSpacePresence(userId: string, username: string) {
 
     // 구독 시작
     spaceChannel.subscribe(async (status) => {
-        if (status === 'SUBSCRIBED') {
+        if (status === 'SUBSCRIBED' && userId && username) {
           // 채널에 성공적으로 접속하면 나의 현재 상태를 알림
           await spaceChannel.track({ 
             user_id: userId, 
@@ -50,7 +50,7 @@ export function useSpacePresence(userId: string, username: string) {
   
     // 독서 상태 변경
     const toggleReadingStatus = async () => {
-      if (!channelRef.current) return;
+      if (!channelRef.current || !userId || !username) return;
 
       const newReadingStatus = !isReading;
       setIsReading(newReadingStatus); // 내 상태를 먼저 바꾸고
