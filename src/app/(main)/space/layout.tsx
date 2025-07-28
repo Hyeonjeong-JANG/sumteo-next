@@ -1,4 +1,4 @@
-export default function MainLayout({
+export default function SpaceLayout({
   children,
 }: {
   children: React.ReactNode;
@@ -8,4 +8,4 @@ export default function MainLayout({
       {children}
     </>
   );
-}   
+}
