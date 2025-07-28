@@ -19,7 +19,6 @@ export function useAuth(){
                 body: JSON.stringify({email, password}),
             });
             const data = await response.json();
-            console.log(data);
             if(!response.ok){
                 setError(data.error || "회원가입에 실패했습니다")
             }else{
