@@ -7,79 +7,73 @@ import { PresenceState } from '../../../shared/types';
 
 
 export function useSpacePresence(userId?: string, username?: string) {
-    const [presentUsers, setPresentUsers] = useState<PresenceState[]>([]);
-    const channelRef = useRef<RealtimeChannel | null>(null);
-    const startTimeRef = useRef<Date | null>(null);
+  const [presentUsers, setPresentUsers] = useState<PresenceState[]>([]);
+  const channelRef = useRef<RealtimeChannel | null>(null);
+  
+  const [currentSessionId, setCurrentSessionId] = useState<string | null>(null);
+  const [isReading, setIsReading] = useState(false);
 
-    // 현재 나의 독서 상태 관리
-    const [isReading, setIsReading] = useState(false);
+  useEffect(() => {
+      const spaceChannel = supabase.channel('space_channel');
 
-    useEffect(()=>{
-        //채널 접속
-        const spaceChannel = supabase.channel('space_channel');
+      spaceChannel.on('presence', { event: 'sync' }, () => {
+          const newState = spaceChannel.presenceState<PresenceState>();
+          const users = Object.values(newState).map((p) => p[0]);
+          setPresentUsers(users);
+      });
 
-        // 이벤트 구독
-        spaceChannel.on('presence', {event: 'sync'}, ()=>{
-            const newState = spaceChannel.presenceState<PresenceState>();
-            const users = Object.values(newState).map((p)=>p[0]);
-            setPresentUsers(users);
-        });
-
-    // 구독 시작
-    spaceChannel.subscribe(async (status) => {
-        if (status === 'SUBSCRIBED' && userId && username) {
-          // 채널에 성공적으로 접속하면 나의 현재 상태를 알림
-          await spaceChannel.track({ 
-            user_id: userId, 
-            is_reading: false,
-            username: username,
-          });
-        }
+      spaceChannel.subscribe(async (status) => {
+          if (status === 'SUBSCRIBED' && userId && username) {
+              await spaceChannel.track({ 
+                  user_id: userId, 
+                  is_reading: isReading,
+                  username: username,
+              });
+          }
       });
 
       channelRef.current = spaceChannel;
 
-    // 컴포넌트가 언마운트될 때 채널 구독을 해제
-    return () => {
-        spaceChannel.unsubscribe();
+      return () => {
+          spaceChannel.unsubscribe();
       };
-    }, [userId, username]); // isReading 상태가 바뀔 때마다 내 상태를 다시 알림
-  
-    // 독서 상태 변경
-    const toggleReadingStatus = async () => {
-      if (!channelRef.current || !userId || !username) return;
+  }, [userId, username, isReading]);
 
-      const newReadingStatus = !isReading;
-      setIsReading(newReadingStatus); // 내 상태를 먼저 바꾸고
-      // 변경된 상태를 채널에 알림
-      await channelRef.current.track({ 
-        user_id: userId, 
-        is_reading: newReadingStatus,
-        username: username,
+  const toggleReadingStatus = async () => {
+    if (!channelRef.current || !userId || !username) return;
+
+    const newReadingStatus = !isReading;
+
+    // 독서 시작 시
+    if (newReadingStatus) {
+      const response = await fetch('/api/reading-sessions', { method: 'POST' });
+      const data = await response.json();
+
+      if (response.ok) {
+        setCurrentSessionId(data.sessionId);
+        setIsReading(true);
+      } else {
+        alert('독서 시작에 실패했습니다: ' + data.error);
+        return;
+      }
+    } 
+    // 독서 종료 시
+    else {
+      if (!currentSessionId) {
+        alert('종료할 독서 세션이 없습니다.');
+        return;
+      }
+      
+      await fetch('/api/reading-sessions', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sessionId: currentSessionId }),
       });
 
-      // 독서 시작 시
-      if (newReadingStatus) {
-        startTimeRef.current = new Date(); // 현재 시간을 기록
-      } 
-      // 독서 종료 시
-      else if (startTimeRef.current) {
-        const endTime = new Date();
-        const startTime = startTimeRef.current;
+      setCurrentSessionId(null);
+      setIsReading(false);
+    }
+  };
 
-        // 서버 API로 독서 기록 전송
-        await fetch('/api/reading-sessions', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            start_time: startTime.toISOString(),
-            end_time: endTime.toISOString(),
-          }),
-        });
-
-        startTimeRef.current = null; // 시작 시간 초기화
-      }
-    };
-  
-    return { presentUsers, isReading, toggleReadingStatus };
-  }
+  return { presentUsers, isReading, toggleReadingStatus };
+}

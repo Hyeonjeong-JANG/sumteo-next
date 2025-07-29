@@ -7,6 +7,7 @@ export function useReadingSession() {
   const [isRecording, setIsRecording] = useState(false);
 
   const startSession = async () => {
+    
     try {
       const response = await fetch('/api/reading-sessions', {
         method: 'POST',
@@ -15,7 +16,7 @@ export function useReadingSession() {
       });
 
       const data = await response.json();
-      
+      console.log(`독서 시작: ${data.message}`);
       if (response.ok) {
         setCurrentSessionId(data.sessionId);
         setIsRecording(true);
@@ -39,6 +40,7 @@ export function useReadingSession() {
       });
 
       const data = await response.json();
+      console.log(`독서 종료: ${data}`);
       
       if (response.ok) {
         setCurrentSessionId(null);
