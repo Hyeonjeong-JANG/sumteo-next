@@ -1,5 +1,7 @@
 import { createClient } from '../../../../lib/supabase/server';
 import { redirect } from 'next/navigation';
+import { updateUsernameAction } from './actions';
+import { AvatarSelector } from '../../../feature/profile/components/AvatarSelector';
 
 export default async function ProfilePage() {
   const supabase = await createClient();
@@ -14,27 +16,9 @@ export default async function ProfilePage() {
 
   const { data: profile } = await supabase
     .from('profiles')
-    .select('username')
+    .select('username, avatar_url')
     .eq('id', user.id)
     .single();
-
-  const updateProfile = async (formData: FormData) => {
-    'use server';
-
-    const supabase = await createClient();
-    const newUsername = formData.get('username') as string;
-
-    const { error } = await supabase
-      .from('profiles')
-      .update({ username: newUsername })
-      .eq('id', user.id);
-
-    if (error) {
-      console.error('Error updating profile:', error);
-    } else {
-      redirect('/profile');
-    }
-  };
 
   return (
     <div>
@@ -42,7 +26,7 @@ export default async function ProfilePage() {
       <p>
         이메일: <strong>{user.email}</strong>
       </p>
-      <form action={updateProfile}>
+      <form action={updateUsernameAction}>
         <label htmlFor="username">닉네임</label>
         <input
           id="username"
@@ -53,6 +37,9 @@ export default async function ProfilePage() {
         />
         <button type="submit">닉네임 저장</button>
       </form>
+
+      <hr style={{ margin: '20px 0' }}/>
+      <AvatarSelector currentAvatar={profile?.avatar_url} />
     </div>
   );
 }
