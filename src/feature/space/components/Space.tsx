@@ -20,7 +20,7 @@ export function Space({
   
     return (
         <div>
-          {/* 👇 로그인 여부에 따라 다른 UI를 보여줌 */}
+          {/* 로그인 여부에 따라 다른 UI를 보여줌 */}
           {user ? (
             <div>
               <p>

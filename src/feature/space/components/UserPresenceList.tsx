@@ -1,10 +1,6 @@
 "use client";
 
-type PresenceState = {
-    user_id: string;
-    is_reading: boolean;
-    username: string;
-};
+import { PresenceState } from '../../../shared/types';
 
 interface UserPresenceListProps {
     users: PresenceState[];

@@ -3,12 +3,8 @@
 import { supabase } from '../../../../lib/supabase/client';
 import { RealtimeChannel } from '@supabase/supabase-js';
 import { useEffect, useState, useRef } from 'react';
+import { PresenceState } from '../../../shared/types';
 
-type PresenceState = {
-    user_id: string;
-    is_reading: boolean;
-    username: string;
-};
 
 export function useSpacePresence(userId?: string, username?: string) {
     const [presentUsers, setPresentUsers] = useState<PresenceState[]>([]);
