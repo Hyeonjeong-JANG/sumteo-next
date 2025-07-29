@@ -16,3 +16,13 @@ export type PresenceState = {
   is_reading: boolean;
   username: string;
 };
+
+// 독서 세션 타입
+export type ReadingSession = {
+  id: string;
+  user_id: string;
+  started_at: string;
+  ended_at?: string;
+  is_active: boolean;
+  created_at: string;
+};

@@ -15,7 +15,7 @@ export default async function SpacePage() {
   const { data: profile } = user
   ? await supabase
     .from('profiles')
-    .select('username')
+    .select('username, avatar_url')
     .eq('id', user.id)
     .single()
     : { data: null };

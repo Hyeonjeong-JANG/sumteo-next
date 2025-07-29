@@ -9,6 +9,7 @@ import { PresenceState } from '../../../shared/types';
 export function useSpacePresence(userId?: string, username?: string) {
     const [presentUsers, setPresentUsers] = useState<PresenceState[]>([]);
     const channelRef = useRef<RealtimeChannel | null>(null);
+    const startTimeRef = useRef<Date | null>(null);
 
     // 현재 나의 독서 상태 관리
     const [isReading, setIsReading] = useState(false);
@@ -56,6 +57,28 @@ export function useSpacePresence(userId?: string, username?: string) {
         is_reading: newReadingStatus,
         username: username,
       });
+
+      // 독서 시작 시
+      if (newReadingStatus) {
+        startTimeRef.current = new Date(); // 현재 시간을 기록
+      } 
+      // 독서 종료 시
+      else if (startTimeRef.current) {
+        const endTime = new Date();
+        const startTime = startTimeRef.current;
+
+        // 서버 API로 독서 기록 전송
+        await fetch('/api/reading-sessions', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            start_time: startTime.toISOString(),
+            end_time: endTime.toISOString(),
+          }),
+        });
+
+        startTimeRef.current = null; // 시작 시간 초기화
+      }
     };
   
     return { presentUsers, isReading, toggleReadingStatus };
