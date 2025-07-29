@@ -9,70 +9,69 @@ import { PresenceState } from '../../../shared/types';
 export function useSpacePresence(userId?: string, username?: string) {
   const [presentUsers, setPresentUsers] = useState<PresenceState[]>([]);
   const channelRef = useRef<RealtimeChannel | null>(null);
-  
-  const [currentSessionId, setCurrentSessionId] = useState<string | null>(null);
   const [isReading, setIsReading] = useState(false);
+  const [currentSessionId, setCurrentSessionId] = useState<string | null>(null);
 
   useEffect(() => {
-      const spaceChannel = supabase.channel('space_channel');
+    // userId나 username이 없으면 아무것도 실행하지 않음 (손님 모드)
+    if (!userId || !username) return;
 
-      spaceChannel.on('presence', { event: 'sync' }, () => {
-          const newState = spaceChannel.presenceState<PresenceState>();
-          const users = Object.values(newState).map((p) => p[0]);
-          setPresentUsers(users);
-      });
+    const spaceChannel = supabase.channel('space_channel');
 
-      spaceChannel.subscribe(async (status) => {
-          if (status === 'SUBSCRIBED' && userId && username) {
-              await spaceChannel.track({ 
-                  user_id: userId, 
-                  is_reading: isReading,
-                  username: username,
-              });
-          }
-      });
+    spaceChannel.on('presence', { event: 'sync' }, () => {
+      const newState = spaceChannel.presenceState<PresenceState>();
+      const users = Object.values(newState).map((p) => p[0]);
+      setPresentUsers(users);
+    });
 
-      channelRef.current = spaceChannel;
+    spaceChannel.subscribe(async (status) => {
+      if (status === 'SUBSCRIBED') {
+        await spaceChannel.track({
+          user_id: userId,
+          is_reading: isReading,
+          username: username,
+        });
+      }
+    });
 
-      return () => {
-          spaceChannel.unsubscribe();
-      };
-  }, [userId, username, isReading]);
+    channelRef.current = spaceChannel;
+
+    return () => {
+      spaceChannel.unsubscribe();
+    };
+  }, [userId, username]);
 
   const toggleReadingStatus = async () => {
-    if (!channelRef.current || !userId || !username) return;
+    if (!channelRef.current || !userId) return;
 
     const newReadingStatus = !isReading;
 
-    // 독서 시작 시
-    if (newReadingStatus) {
+    if (newReadingStatus) { // 독서 시작
       const response = await fetch('/api/reading-sessions', { method: 'POST' });
       const data = await response.json();
-
       if (response.ok) {
         setCurrentSessionId(data.sessionId);
         setIsReading(true);
       } else {
-        alert('독서 시작에 실패했습니다: ' + data.error);
+        alert('독서 시작 실패: ' + data.error);
         return;
       }
-    } 
-    // 독서 종료 시
-    else {
-      if (!currentSessionId) {
-        alert('종료할 독서 세션이 없습니다.');
-        return;
-      }
-      
+    } else { // 독서 종료
+      if (!currentSessionId) return;
       await fetch('/api/reading-sessions', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ sessionId: currentSessionId }),
       });
-
       setCurrentSessionId(null);
       setIsReading(false);
     }
+
+    await channelRef.current.track({
+      user_id: userId,
+      is_reading: newReadingStatus,
+      username: username,
+    });
   };
 
   return { presentUsers, isReading, toggleReadingStatus };

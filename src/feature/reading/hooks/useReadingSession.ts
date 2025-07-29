@@ -7,16 +7,15 @@ export function useReadingSession() {
   const [isRecording, setIsRecording] = useState(false);
 
   const startSession = async () => {
-    
     try {
       const response = await fetch('/api/reading-sessions', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'start' })
       });
 
       const data = await response.json();
       console.log(`독서 시작: ${data.message}`);
+      
       if (response.ok) {
         setCurrentSessionId(data.sessionId);
         setIsRecording(true);
@@ -34,13 +33,13 @@ export function useReadingSession() {
 
     try {
       const response = await fetch('/api/reading-sessions', {
-        method: 'POST',
+        method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'end', sessionId: currentSessionId })
+        body: JSON.stringify({ sessionId: currentSessionId })
       });
 
       const data = await response.json();
-      console.log(`독서 종료: ${data}`);
+      console.log(`독서 종료:`, data);
       
       if (response.ok) {
         setCurrentSessionId(null);
