@@ -2,6 +2,7 @@ import { createClient } from '../../../../lib/supabase/server';
 import { redirect } from 'next/navigation';
 import { updateUsernameAction } from './actions';
 import { AvatarSelector } from '../../../feature/profile/components/AvatarSelector';
+import Link from 'next/link';
 
 export default async function ProfilePage() {
   const supabase = await createClient();
@@ -21,25 +22,81 @@ export default async function ProfilePage() {
     .single();
 
   return (
-    <div>
-      <h1>프로필 설정</h1>
-      <p>
-        이메일: <strong>{user.email}</strong>
-      </p>
-      <form action={updateUsernameAction}>
-        <label htmlFor="username">닉네임</label>
-        <input
-          id="username"
-          name="username"
-          type="text"
-          defaultValue={profile?.username || ''} // DB에서 가져온 닉네임을 기본값으로 보여줌
-          className="placeholder-gray-400"
-        />
-        <button type="submit">닉네임 저장</button>
-      </form>
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+      <div className="container mx-auto px-4 py-8">
+        <div className="max-w-4xl mx-auto">
+          {/* 헤더 */}
+          <div className="text-center mb-8">
+            <h1 className="page-title">⚙️ 프로필 설정</h1>
+            <div className="flex items-center justify-center gap-4">
+              <Link href="/space">
+                <button className="btn-secondary">
+                  ← 독서실로 돌아가기
+                </button>
+              </Link>
+            </div>
+          </div>
 
-      <hr style={{ margin: '20px 0' }}/>
-      <AvatarSelector currentAvatar={profile?.avatar_url} />
+          <div className="grid md:grid-cols-2 gap-6">
+            {/* 기본 정보 카드 */}
+            <div className="card">
+              <h2 className="section-title">📋 기본 정보</h2>
+              
+              <div className="space-y-6">
+                <div>
+                  <label className="block text-sm font-medium text-slate-300 mb-2">
+                    이메일
+                  </label>
+                  <div className="bg-slate-700/50 rounded-lg px-4 py-3 border border-slate-600">
+                    <span className="text-slate-200">{user.email}</span>
+                  </div>
+                </div>
+
+                <form action={updateUsernameAction} className="space-y-4">
+                  <div>
+                    <label htmlFor="username" className="block text-sm font-medium text-slate-300 mb-2">
+                      닉네임
+                    </label>
+                    <input
+                      id="username"
+                      name="username"
+                      type="text"
+                      defaultValue={profile?.username || ''}
+                      className="input-field"
+                      placeholder="새로운 닉네임을 입력하세요"
+                    />
+                  </div>
+                  <button type="submit" className="btn-primary w-full">
+                    💾 닉네임 저장
+                  </button>
+                </form>
+              </div>
+            </div>
+
+            {/* 아바타 선택 카드 */}
+            <div className="card">
+              <h2 className="section-title">🎭 아바타 선택</h2>
+              <p className="text-slate-400 text-sm mb-4">
+                좋아하는 작가를 선택해서 나만의 아바타로 설정해보세요
+              </p>
+              
+              {/* 현재 선택된 아바타 미리보기 */}
+              {profile?.avatar_url && (
+                <div className="text-center mb-6 p-4 bg-slate-700/30 rounded-lg border border-slate-600">
+                  <p className="text-sm text-slate-400 mb-3">현재 아바타</p>
+                  <img 
+                    src={profile.avatar_url} 
+                    alt="현재 아바타" 
+                    className="w-20 h-20 rounded-full mx-auto border-4 border-amber-400"
+                  />
+                </div>
+              )}
+              
+              <AvatarSelector currentAvatar={profile?.avatar_url} />
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

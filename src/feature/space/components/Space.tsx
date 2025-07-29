@@ -44,38 +44,78 @@ export function Space({
     };
   
     return (
-        <div>
-          {/* 로그인 여부에 따라 다른 UI를 보여줌 */}
-          {user ? (
-            <div>
-              <p>
-                {profile?.username || user.email}님 환영합니다.
-              </p>
-              <Link href="/profile">
-                <button style={{ marginRight: '10px' }}>프로필 설정</button>
-              </Link>
-              <LogoutButton />
-              <hr style={{ margin: '20px 0' }} />
-              <h2>현재 접속자 목록</h2>
-              <UserPresenceList users={presentUsers} />
-              <hr style={{ margin: '20px 0' }} />
-              <button onClick={handleToggleReading}>
-                {isReading ? '독서 종료' : '독서 시작'}
-              </button>
-              <p>나의 현재 상태: {isReading ? '🟢 독서 중' : '🔴 딴짓 중'}</p>
-              {isRecording && <p>⏱️ 독서 시간을 기록 중입니다...</p>}
+      <div className="max-w-4xl mx-auto">
+        {/* 로그인 여부에 따라 다른 UI를 보여줌 */}
+        {user ? (
+          <div className="space-y-6">
+            {/* 내 상태 카드 */}
+            <div className="card">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="section-title">📖 나의 독서 현황</h2>
+                <Link href="/profile">
+                  <button className="btn-secondary">
+                    ⚙️ 프로필 설정
+                  </button>
+                </Link>
+              </div>
+              
+              <div className="text-center space-y-4">
+                <button 
+                  onClick={handleToggleReading}
+                  className={`btn-reading ${isReading ? 'ending' : ''}`}
+                >
+                  {isReading ? '📚 독서 종료' : '📖 독서 시작'}
+                </button>
+                
+                <div className="flex justify-center">
+                  <div className={`status-indicator ${isReading ? 'status-reading' : 'status-idle'}`}>
+                    <span className="text-2xl">{isReading ? '🟢' : '🔴'}</span>
+                    <span>
+                      {isReading ? '독서 중' : '휴식 중'}
+                    </span>
+                  </div>
+                </div>
+                
+                {isRecording && (
+                  <div className="flex items-center justify-center gap-2 text-amber-400">
+                    <span className="animate-pulse">⏱️</span>
+                    <span className="font-medium">독서 시간을 기록하고 있습니다...</span>
+                  </div>
+                )}
+              </div>
             </div>
-          ) : (
-            <div>
-              <h2>현재 접속자 목록</h2>
+
+            {/* 현재 접속자 목록 카드 */}
+            <div className="card">
+              <h2 className="section-title">👥 현재 접속자 목록</h2>
               <UserPresenceList users={presentUsers} />
-              <hr style={{ margin: '20px 0' }} />
-              <p>다른 사람들의 독서를 구경하고 있어요.</p>
-              <Link href="/signin">
-                <button>로그인하고 독서 참여하기</button>
-              </Link>
             </div>
-          )}
-        </div>
-      );
-    }
+          </div>
+        ) : (
+          <div className="card text-center">
+            <div className="space-y-6">
+              <div>
+                <h2 className="section-title">👀 구경 모드</h2>
+                <p className="text-slate-300 mb-6">
+                  다른 사람들의 독서를 구경하고 있어요
+                </p>
+              </div>
+              
+              <div className="user-list">
+                <h3 className="text-lg font-semibold mb-4 text-amber-400">현재 접속자</h3>
+                <UserPresenceList users={presentUsers} />
+              </div>
+              
+              <div className="pt-6 border-t border-white/10">
+                <Link href="/signin">
+                  <button className="btn-primary text-lg px-8 py-4">
+                    🚪 로그인하고 독서 참여하기
+                  </button>
+                </Link>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    );
+}

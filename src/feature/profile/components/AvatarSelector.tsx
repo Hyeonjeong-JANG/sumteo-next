@@ -14,9 +14,9 @@ export function AvatarSelector({ currentAvatar }: { currentAvatar?: string | nul
     try {
       await updateAvatarAction(imageUrl);
       setSelectedAvatar(imageUrl);
-      alert('아바타가 변경되었습니다.');
+      alert('🎉 아바타가 변경되었습니다!');
     } catch (error) {
-      alert('아바타 변경 중 오류가 발생했습니다.');
+      alert('❌ 아바타 변경 중 오류가 발생했습니다.');
     } finally {
       setIsUpdating(false);
     }
@@ -24,33 +24,41 @@ export function AvatarSelector({ currentAvatar }: { currentAvatar?: string | nul
 
   return (
     <div>
-      <h3>아바타 선택</h3>
-      {isUpdating && <p>아바타를 변경 중입니다...</p>}
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
+      {isUpdating && (
+        <div className="text-center mb-4 p-3 bg-amber-500/20 border border-amber-500/30 rounded-lg">
+          <div className="flex items-center justify-center gap-2 text-amber-400">
+            <div className="w-4 h-4 border-2 border-amber-400 border-t-transparent rounded-full animate-spin"></div>
+            <span className="font-medium">아바타를 변경하고 있습니다...</span>
+          </div>
+        </div>
+      )}
+      
+      <div className="avatar-grid">
         {authorAvatars.map((author) => (
           <button
             key={author.id}
             onClick={() => handleAvatarClick(author.imageUrl)}
             disabled={isUpdating}
-            style={{
-              border: selectedAvatar === author.imageUrl ? '3px solid #007bff' : '1px solid #ccc',
-              padding: '5px',
-              borderRadius: '50%',
-              background: 'none',
-              cursor: isUpdating ? 'not-allowed' : 'pointer',
-              opacity: isUpdating ? 0.6 : 1
-            }}
+            className={`avatar-button ${selectedAvatar === author.imageUrl ? 'selected' : ''}`}
           >
             <Image
               src={author.imageUrl}
               alt={author.name}
               width={80}
               height={80}
-              style={{ borderRadius: '50%' }}
+              className="avatar-image"
             />
-            <p style={{ fontSize: '12px', textAlign: 'center', marginTop: '4px' }}>{author.name}</p>
+            <p className="text-xs text-center font-medium text-slate-300">
+              {author.name}
+            </p>
           </button>
         ))}
+      </div>
+      
+      <div className="mt-6 text-center">
+        <p className="text-sm text-slate-400">
+          총 <span className="text-amber-400 font-semibold">{authorAvatars.length}명</span>의 작가 중에서 선택하세요
+        </p>
       </div>
     </div>
   );
