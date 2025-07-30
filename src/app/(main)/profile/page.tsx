@@ -1,7 +1,8 @@
 import { createClient } from '../../../../lib/supabase/server';
 import { redirect } from 'next/navigation';
-import { updateUsernameAction } from './actions';
+import { updateUsernameAction } from '../actions';
 import { AvatarSelector } from '../../../feature/profile/components/AvatarSelector';
+import { UsernameForm } from '../../../feature/profile/components/UsernameForm';
 import Link from 'next/link';
 
 export default async function ProfilePage() {
@@ -27,7 +28,7 @@ export default async function ProfilePage() {
       <div className="text-center mb-8">
         <h1 className="page-title">⚙️ 프로필 설정</h1>
         <div className="flex items-center justify-center gap-4">
-          <Link href="/space">
+          <Link href="/reading-space">
             <button className="btn-secondary">
               ← 독서실로 돌아가기
             </button>
@@ -50,24 +51,7 @@ export default async function ProfilePage() {
               </div>
             </div>
 
-            <form action={updateUsernameAction} className="space-y-4">
-              <div>
-                <label htmlFor="username" className="block text-sm font-medium text-slate-300 mb-2">
-                  닉네임
-                </label>
-                <input
-                  id="username"
-                  name="username"
-                  type="text"
-                  defaultValue={profile?.username || ''}
-                  className="input-field"
-                  placeholder="새로운 닉네임을 입력하세요"
-                />
-              </div>
-              <button type="submit" className="btn-primary w-full">
-                💾 닉네임 저장
-              </button>
-            </form>
+            <UsernameForm currentUsername={profile?.username} />
           </div>
         </div>
 

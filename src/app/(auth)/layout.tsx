@@ -25,7 +25,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
           </div>
 
           <div className="text-center mt-8">
-            <Link href="/space" className="text-secondary-text hover:text-primary-text text-sm transition-colors">
+            <Link href="/reading-space" className="text-secondary-text hover:text-primary-text text-sm transition-colors">
               👀 로그인 없이 구경하기
             </Link>
           </div>

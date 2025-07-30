@@ -1,5 +1,5 @@
 import { LogoutButton } from '../../../feature/auth/components/LogoutButton';
-import { Space } from '../../../feature/space/components/Space';
+import { ReadingSpace } from '../../../feature/space/components/ReadingSpace';
 import { createClient } from '../../../../lib/supabase/server';
 import { Profile } from '../../../shared/types';
 
@@ -39,7 +39,7 @@ export default async function SpacePage() {
           <LogoutButton />
         </div>
       )}
-      <Space user={user} profile={profile as Profile} />
+      <ReadingSpace user={user} profile={profile as Profile} />
     </>
   );
 }

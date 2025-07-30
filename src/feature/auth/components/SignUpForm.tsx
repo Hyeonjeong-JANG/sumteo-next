@@ -1,26 +1,27 @@
 "use client";
 
-import { useAuth } from "../hooks/useAuth";
+import { signUpAction } from '../../../app/(auth)/actions';
 
-export function SignUpForm(){
-    const {signUp, loading, error} = useAuth();
-    
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
-        const formData = new FormData(event.currentTarget);
-        const email = formData.get("email") as string;
-        const password = formData.get("password") as string;
-        signUp(email, password);
-    };
+export function SignUpForm() {
 
-    return(
-        <form onSubmit={handleSubmit}>
-            <input type="email" name="email" placeholder="이메일" required />
-            <input type="password" name="password" placeholder="비밀번호" required />
-            <button type="submit" disabled={loading}>
-                {loading ? "회원가입 중..." : "회원가입"}
+    return (
+        <form action={signUpAction}>
+            <input
+                name="email"
+                className="input-field"
+                placeholder="이메일을 입력해주세요"
+                required
+            />
+            <input
+                name="password"
+                type="password"
+                className="input-field"
+                placeholder="비밀번호를 입력해주세요"
+                required
+            />
+            <button type="submit">
+                회원가입
             </button>
-            {error && <p>{error}</p>}
         </form>
     );
 }
