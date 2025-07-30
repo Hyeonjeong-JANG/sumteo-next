@@ -64,6 +64,7 @@ export function useSpace(userId?: string, username?: string) {
         return;
       }
     } else { // 독서 종료
+      console.log('종료하려는 세션 ID:', currentSessionId);
       if (!currentSessionId) return;
       const result = await endReadingSessionAction(currentSessionId);
       if (result.success) {
