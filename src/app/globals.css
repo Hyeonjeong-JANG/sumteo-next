@@ -164,6 +164,8 @@ body {
   border-radius: 50%;
   border: 3px solid rgba(255, 255, 255, 0.1);
   transition: all 0.3s ease;
+  width: 80px;
+  height: 80px;
 }
 
 .avatar-button:hover .avatar-image {

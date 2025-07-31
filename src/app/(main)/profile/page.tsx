@@ -47,7 +47,7 @@ export default async function ProfilePage() {
                 이메일
               </label>
               <div className="bg-slate-700/50 rounded-lg px-4 py-3 border border-slate-600">
-                <span className="text-slate-200">{user.email}</span>
+                <span className="text-slate-200/50">{user.email}</span>
               </div>
             </div>
 
