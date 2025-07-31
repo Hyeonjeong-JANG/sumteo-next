@@ -16,10 +16,12 @@ export function useSpace(userId?: string, username?: string) {
 
   useEffect(() => {
     console.log("--- useEffect 실행! 채널에 접속합니다. ---");
-    if (!userId || !username) return;
+    console.log("userId:", userId);
 
-    // 1. 현재 독서 상태를 데이터베이스에서 확인
+    // 로그인한 사용자만 독서 상태를 데이터베이스에서 확인
     const checkCurrentReadingStatus = async () => {
+      if (!userId) return; // 로그인하지 않은 사용자는 건너뜀
+
       try {
         const { data, error } = await supabase
           .from('reading_sessions')
@@ -46,21 +48,22 @@ export function useSpace(userId?: string, username?: string) {
 
     checkCurrentReadingStatus();
 
-    // 2. 모든 사용자가 하나의 공통 채널에 접속합니다.
-    // 이렇게 해야 서로 다른 사용자들의 독서 상태를 실시간으로 볼 수 있습니다.
+    // 모든 사용자(로그인/비로그인 구분 없이)가 하나의 공통 채널에 접속합니다.
+    // 이렇게 해야 로그인하지 않은 사용자도 다른 사람들의 독서 상태를 볼 수 있습니다.
     const channel = supabase.channel('reading_space_shared');
     channelRef.current = channel;
 
-    // 3. 'presence' 이벤트가 발생하면(누군가 들어오거나 상태를 바꾸면),
+    // 'presence' 이벤트가 발생하면(누군가 들어오거나 상태를 바꾸면),
     // 접속자 목록(presentUsers) 상태를 업데이트합니다.
     channel.on('presence', { event: 'sync' }, () => {
       const newState = channel.presenceState<PresenceState>();
       setPresentUsers(Object.values(newState).map((p) => p[0]));
     });
 
-    // 4. 채널 구독을 시작합니다.
+    // 채널 구독을 시작합니다.
     channel.subscribe(async (status) => {
-      // 5. 구독에 성공하고, 로그인한 사용자라면 나의 현재 상태를 방송(track)합니다.
+      // 구독에 성공하고, 로그인한 사용자라면 나의 현재 상태를 방송(track)합니다.
+      // 로그인하지 않은 사용자는 자신의 상태를 track하지 않고 구경만 합니다.
       if (status === 'SUBSCRIBED' && userId && username) {
         // 현재 독서 상태로 track
         await channel.track({
@@ -71,7 +74,7 @@ export function useSpace(userId?: string, username?: string) {
       }
     });
 
-    // 6. 컴포넌트가 사라질 때 채널 구독을 끊습니다.
+    // 컴포넌트가 사라질 때 채널 구독을 끊습니다.
     return () => { channel.unsubscribe(); };
   }, [userId, username]);
 
