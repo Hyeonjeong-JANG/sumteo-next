@@ -14,6 +14,10 @@ export function AttendanceCalendar() {
         '2024-03-22': true,
     };
 
+    // 임시 통계 데이터
+    const monthlyReadTime = "24시간 30분";
+    const monthlyAttendance = "7일";
+
     const getDaysInMonth = (date: Date) => {
         const year = date.getFullYear();
         const month = date.getMonth();
@@ -141,15 +145,14 @@ export function AttendanceCalendar() {
                 <div className="flex items-center justify-center gap-4 text-xs">
                     <div className="flex items-center gap-2">
                         <div className="w-3 h-3 rounded bg-green-600/50 border border-green-500/50"></div>
-                        <span className="text-slate-400">출석</span>
+                        <span className="text-slate-400">이번 달 출석</span>
+                        <span className="text-slate-400">{monthlyAttendance}</span>
+
                     </div>
                     <div className="flex items-center gap-2">
                         <div className="w-3 h-3 rounded bg-red-600/50 border border-red-500/50"></div>
-                        <span className="text-slate-400">결석</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                        <div className="w-3 h-3 rounded bg-blue-600"></div>
-                        <span className="text-slate-400">오늘</span>
+                        <span className="text-slate-400">이번 달 독서시간</span>
+                        <span className="text-slate-400">{monthlyReadTime}</span>
                     </div>
                 </div>
             </div>

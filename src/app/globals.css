@@ -1,334 +1,108 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap');
 @import "tailwindcss";
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap');
 
-/* '숨터' 프로젝트 전용 CSS 변수 */
-:root {
-  --primary-bg: #1a1b23;
-  --secondary-bg: #2a2b35;
-  --accent-bg: #3a3b47;
-  --primary-text: #e8e8e8;
-  --secondary-text: #b8b8b8;
-  --accent-color: #8b5e3c;
-  --warm-accent: #d4af37;
-  --reading-active: #4ade80;
-  --reading-inactive: #ef4444;
+@theme {
+  /* 폰트 설정 */
+  --font-sans: 'Noto Sans KR', ui-sans-serif, system-ui, sans-serif;
+  
+  /* 브랜드 색상 정의 */
+  --color-primary-bg: #1a1b23;
+  --color-secondary-bg: #2a2b35;
+  --color-accent-bg: #3a3b47;
+  --color-primary-text: #e8e8e8;
+  --color-secondary-text: #b8b8b8;
+  --color-accent: #8b5e3c;
+  --color-warm-accent: #d4af37;
+  --color-reading-active: #4ade80;
+  --color-reading-inactive: #ef4444;
+  
+  /* shadcn/ui 색상 매핑 - v4 방식 */
+  --color-background: #1a1b23;
+  --color-foreground: #e8e8e8;
+  --color-card: #2a2b35;
+  --color-card-foreground: #e8e8e8;
+  --color-primary: #8b5e3c;
+  --color-primary-foreground: #ffffff;
+  --color-secondary: #3a3b47;
+  --color-secondary-foreground: #e8e8e8;
+  --color-muted: #3a3b47;
+  --color-muted-foreground: #b8b8b8;
+  --color-accent-color: #d4af37;
+  --color-accent-foreground: #1a1b23;
+  --color-border: rgba(255, 255, 255, 0.1);
+  --color-input: rgba(255, 255, 255, 0.2);
+  --color-ring: #d4af37;
+  
+  /* 보더 반지름 */
+  --radius: 0.625rem;
 }
 
-* {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
-}
-
-body {
-  font-family: 'Noto Sans KR', sans-serif;
-  color: var(--primary-text);
-  min-height: 100vh;
-  line-height: 1.6;
-}
-
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 20px;
-}
-
-/* 카드 스타일 */
-.card {
-  background: rgba(42, 43, 53, 0.8);
-  backdrop-filter: blur(10px);
-  border-radius: 16px;
-  padding: 24px;
+/* 커스텀 유틸리티 정의 */
+@utility card {
+  background-color: var(--color-secondary-bg);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-/* 버튼 스타일 */
-.btn-primary {
-  background: linear-gradient(135deg, var(--accent-color) 0%, var(--warm-accent) 100%);
+@utility btn-primary {
+  background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-warm-accent) 100%);
   color: white;
-  border: none;
+  font-weight: 600;
   padding: 12px 24px;
   border-radius: 8px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 16px rgba(139, 94, 60, 0.3);
-}
-
-.btn-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(139, 94, 60, 0.4);
-}
-
-.btn-secondary {
-  background: rgba(255, 255, 255, 0.1);
-  color: var(--primary-text);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  padding: 10px 20px;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.btn-secondary:hover {
-  background: rgba(255, 255, 255, 0.2);
-  border-color: rgba(255, 255, 255, 0.3);
-}
-
-.btn-reading {
-  background: linear-gradient(135deg, var(--reading-active) 0%, #16a34a 100%);
-  color: white;
+  transition: all 0.2s ease;
   border: none;
-  padding: 16px 32px;
-  border-radius: 12px;
-  font-size: 18px;
-  font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 6px 20px rgba(74, 222, 128, 0.3);
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(139, 94, 60, 0.3);
+  }
 }
 
-.btn-reading:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 10px 30px rgba(74, 222, 128, 0.4);
-}
-
-.btn-reading.ending {
-  background: linear-gradient(135deg, var(--reading-inactive) 0%, #dc2626 100%);
-  box-shadow: 0 6px 20px rgba(239, 68, 68, 0.3);
-}
-
-.btn-reading.ending:hover {
-  box-shadow: 0 10px 30px rgba(239, 68, 68, 0.4);
-}
-
-/* 입력 필드 스타일 */
-.input-field {
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 8px;
-  padding: 12px 16px;
-  color: var(--primary-text);
-  font-size: 16px;
-  transition: all 0.3s ease;
-  width: 100%;
-}
-
-.input-field:focus {
-  outline: none;
-  border-color: var(--warm-accent);
-  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
-}
-
-.input-field::placeholder {
-  color: var(--secondary-text);
-}
-
-/* 아바타 관련 스타일 */
-.avatar-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-  gap: 16px;
-  margin-top: 20px;
-}
-
-.avatar-button {
-  background: rgba(255, 255, 255, 0.05);
-  border: 2px solid transparent;
-  border-radius: 16px;
-  padding: 12px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-}
-
-.avatar-button:hover {
-  background: rgba(255, 255, 255, 0.1);
-  transform: translateY(-4px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
-}
-
-.avatar-button.selected {
-  border-color: var(--warm-accent);
-  background: rgba(212, 175, 55, 0.1);
-  box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
-}
-
-.avatar-image {
-  border-radius: 50%;
-  border: 3px solid rgba(255, 255, 255, 0.1);
-  transition: all 0.3s ease;
-  width: 80px;
-  height: 80px;
-}
-
-.avatar-button:hover .avatar-image {
-  border-color: rgba(255, 255, 255, 0.3);
-}
-
-.avatar-button.selected .avatar-image {
-  border-color: var(--warm-accent);
-}
-
-/* 상태 표시 */
-.status-indicator {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 16px;
-  border-radius: 20px;
-  font-size: 14px;
+@utility btn-secondary {
+  background-color: var(--color-accent-bg);
+  color: var(--color-secondary-text);
   font-weight: 500;
-}
-
-.status-reading {
-  background: rgba(74, 222, 128, 0.2);
-  color: var(--reading-active);
-  border: 1px solid rgba(74, 222, 128, 0.3);
-}
-
-.status-idle {
-  background: rgba(239, 68, 68, 0.2);
-  color: var(--reading-inactive);
-  border: 1px solid rgba(239, 68, 68, 0.3);
-}
-
-/* 사용자 목록 */
-.user-list {
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 12px;
-  padding: 20px;
+  padding: 12px 24px;
+  border-radius: 8px;
   border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.2s ease;
+  cursor: pointer;
+  
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.2);
+  }
 }
 
-.user-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 12px 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+@utility container-main {
+  min-height: 100vh;
+  padding: 24px;
 }
 
-.user-item:last-child {
-  border-bottom: none;
+@utility container-content {
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
-/* 제목 스타일 */
-.page-title {
-  font-size: 2.5rem;
+@utility page-header {
+  margin-bottom: 32px;
+}
+
+@utility page-title {
+  font-size: 2rem;
   font-weight: 700;
-  text-align: center;
-  margin-bottom: 2rem;
-  /* background: linear-gradient(135deg, var(--warm-accent) 0%, #f4d03f 100%); */
-  -webkit-background-clip: text;
-  /* -webkit-text-fill-color: transparent; */
-  background-clip: text;
-}
-
-.section-title {
-  font-size: 1.5rem;
-  font-weight: 600;
-  margin-bottom: 1rem;
-  color: var(--warm-accent);
-}
-
-/* 반응형 */
-@media (max-width: 768px) {
-  .avatar-grid {
-    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-    gap: 12px;
-  }
-
-  .page-title {
-    font-size: 2rem;
-  }
-
-  .container {
-    padding: 0 16px;
-  }
-}
-
-@theme inline {
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
-  --color-popover: var(--popover);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-destructive: var(--destructive);
-  --color-border: var(--border);
-  --color-input: var(--input);
-  --color-ring: var(--ring);
-  --color-chart-1: var(--chart-1);
-  --color-chart-2: var(--chart-2);
-  --color-chart-3: var(--chart-3);
-  --color-chart-4: var(--chart-4);
-  --color-chart-5: var(--chart-5);
-  --color-sidebar: var(--sidebar);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-ring: var(--sidebar-ring);
-}
-
-.dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  color: var(--color-primary-text);
+  margin-bottom: 8px;
 }
 
 @layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
   body {
-    @apply bg-background text-foreground;
+    font-family: var(--font-sans);
+    background: linear-gradient(135deg, var(--color-primary-bg) 0%, var(--color-secondary-bg) 100%);
+    color: var(--color-primary-text);
   }
 }
