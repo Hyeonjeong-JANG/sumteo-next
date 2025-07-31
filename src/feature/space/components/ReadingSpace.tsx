@@ -28,7 +28,7 @@ export function ReadingSpace({
           <div className="card">
             <div className="flex items-center justify-between mb-6">
               <h2 className="section-title">📖 나의 독서 현황</h2>
-              <Link href="/profile">
+              <Link href="/dashboard">
                 <button className="btn-secondary">
                   ⚙️ 프로필 설정
                 </button>

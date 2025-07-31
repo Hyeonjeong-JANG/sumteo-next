@@ -5,7 +5,7 @@ import { AvatarSelector } from '../../../feature/profile/components/AvatarSelect
 import { UsernameForm } from '../../../feature/profile/components/UsernameForm';
 import Link from 'next/link';
 
-export default async function ProfilePage() {
+export default async function DashboardPage() {
   const supabase = await createClient();
 
   const {

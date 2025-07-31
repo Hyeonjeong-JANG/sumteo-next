@@ -18,7 +18,7 @@ export async function updateUsernameAction(formData: FormData) {
 
     if (error) throw error;
 
-    revalidatePath('/profile');
+    revalidatePath('/dashboard');
     return { success: true, message: '닉네임이 변경되었습니다.' };
   } catch (e) {
     return { success: false, message: '닉네임 변경에 실패했습니다: ' + (e as Error).message };
@@ -39,7 +39,7 @@ export async function updateAvatarAction(avatarUrl: string) {
 
     if (error) throw error;
 
-    revalidatePath('/profile');
+    revalidatePath('/dashboard');
     return { success: true, message: '아바타가 변경되었습니다.' };
   } catch (e) {
     return { success: false, message: '아바타 변경에 실패했습니다: ' + (e as Error).message };
