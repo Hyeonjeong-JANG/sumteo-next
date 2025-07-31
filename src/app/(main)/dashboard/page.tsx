@@ -29,8 +29,11 @@ export default async function DashboardPage() {
     <div className="container-main">
       <div className="container-content max-w-6xl">
         {/* 헤더 */}
-        <div className="page-header">
-          <h1 className="page-title">📅 나의 독서 대시보드</h1>
+        <div className="page-header flex space-x-4">
+          <h1 className="page-title">나의 독서 대시보드</h1>
+          <Link href="/reading-space">
+            <button className="btn-primary w-fit">독서실 입장</button>
+          </Link>
         </div>
         {/* 메인 그리드 */}
         <div className="grid lg:grid-cols-3 gap-8 items-start">
@@ -54,10 +57,7 @@ export default async function DashboardPage() {
                 <p className="text-sm text-slate-400">{user.email}</p>
               </div>
               <div className="space-y-2 mt-6">
-                <Link href="/reading-space">
-                  <button className="btn-primary w-full">📚 독서실 입장</button>
-                </Link>
-                <Link href="/profile">
+                <Link href="/profile" prefetch={false}>
                   <button className="btn-secondary w-full">⚙️ 프로필 설정</button>
                 </Link>
               </div>

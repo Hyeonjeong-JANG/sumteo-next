@@ -8,7 +8,7 @@ export function LogoutButton() {
       <button
         className="btn-secondary text-sm"
       >
-        🚪 로그아웃
+        로그아웃
       </button>
     </form>
   );
