@@ -78,7 +78,7 @@ export function ReadingSpace({
             <div className="pt-6 border-t border-white/10">
               <Link href="/signin">
                 <button className="btn-primary text-lg px-8 py-4">
-                  🚪 로그인하고 독서 참여하기
+                  🚪 로그인하고 함께 책읽기
                 </button>
               </Link>
             </div>
