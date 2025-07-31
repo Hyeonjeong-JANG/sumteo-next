@@ -30,7 +30,7 @@ export function ReadingSpace({
               <h2 className="section-title">📖 나의 독서 현황</h2>
               <Link href="/dashboard">
                 <button className="btn-secondary">
-                  ⚙️ 프로필 설정
+                  📅 대시보드
                 </button>
               </Link>
             </div>
@@ -40,12 +40,12 @@ export function ReadingSpace({
                 onClick={toggleReadingStatus}
                 className={`btn-reading ${isReading ? 'ending' : ''}`}
               >
-                {isReading ? '📚 독서 종료' : '📖 독서 시작'}
+                {isReading ? '독서 종료' : '독서 시작'}
               </button>
 
               <div className="flex justify-center">
                 <div className={`status-indicator ${isReading ? 'status-reading' : 'status-idle'}`}>
-                  <span className="text-2xl">{isReading ? '🟢' : '🔴'}</span>
+                  <span className="text-2xl">{isReading ? '📖' : '😴'}</span>
                   <span>
                     {isReading ? '독서 중' : '휴식 중'}
                   </span>
