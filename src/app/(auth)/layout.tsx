@@ -1,4 +1,5 @@
 // src/app/(auth)/layout.tsx
+import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
 
@@ -10,8 +11,9 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
           <div className="page-header">
             <Link href="/">
               <h1 className="text-4xl font-bold mb-4">
+                <Image src="/icons/lock-door-neon.png" alt="lock-door" width={50} height={50} />
                 <span className="bg-gradient-to-r from-warm-accent to-accent-color bg-clip-text">
-                  📚 숨터
+                  숨터
                 </span>
               </h1>
             </Link>
