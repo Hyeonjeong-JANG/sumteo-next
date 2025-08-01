@@ -41,7 +41,7 @@ export function AvatarSelector({ currentAvatar }: { currentAvatar?: string | nul
               alt={author.name}
               width={80}
               height={80}
-              className="avatar-image"
+              className="avatar-image w-20 h-20"
             />
             <p className="text-xs text-center font-medium text-slate-300">
               {author.name}
