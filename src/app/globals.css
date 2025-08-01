@@ -50,12 +50,22 @@
   @apply bg-accent-bg text-secondary-text font-medium px-4 py-2 rounded-md transition-all duration-200 ease-in-out hover:bg-accent-bg/80;
 }
 
-/* @utility avatar-grid {
+@utility avatar-grid {
   @apply grid grid-cols-3 sm:grid-cols-4 gap-4;
-} */
+}
 
 @utility avatar-image {
-  @apply rounded-full w-full aspect-square;
+  @apply rounded-full w-full aspect-square border-2 border-primary shadow-sm;
+}
+
+@utility avatar-button {
+  @apply transition-transform duration-200 ease-out p-2 rounded-lg 
+         hover:scale-105 hover:bg-slate-700/30
+         focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-secondary-bg;
+  
+  &.selected {
+    @apply ring-2 ring-primary bg-primary/10;
+  }
 }
 
 @utility container-main {

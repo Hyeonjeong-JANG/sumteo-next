@@ -2,10 +2,12 @@
 
 import { useRouter } from 'next/navigation';
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useTransition } from 'react';
 import { UsernameForm } from '@/feature/profile/components/UsernameForm';
 import { AvatarSelector } from '@/feature/profile/components/AvatarSelector';
 import type { User, Profile } from '@/shared/types';
+import toast from 'react-hot-toast';
+import { updateAvatarAction, updateUsernameAction } from '@/app/(main)/actions';
 
 interface ProfileModalClientProps {
     user: User;
@@ -18,6 +20,8 @@ export function ProfileModalClient({
 }: ProfileModalClientProps) {
     const [open, setOpen] = useState(true);
     const router = useRouter();
+    const [isUsernamePending, startUsernameTransition] = useTransition();
+    const [isAvatarPending, startAvatarTransition] = useTransition();
 
     useEffect(() => {
         if (!open) {
@@ -25,30 +29,43 @@ export function ProfileModalClient({
         }
     }, [open, router]);
 
+    // 닉네임 저장
+    const handleUsernameSubmit = (formData: FormData) => {
+        startUsernameTransition(async () => {
+            const result = await updateUsernameAction(formData);
+            if (result.success) toast.success(result.message);
+            else toast.error(result.message);
+        });
+    };
+
+    // 아바타 저장
+    const handleAvatarClick = (imageUrl: string) => {
+        startAvatarTransition(async () => {
+            const result = await updateAvatarAction(imageUrl);
+            if (result.success) toast.success(result.message);
+            else toast.error(result.message);
+        });
+    };
+
     return (
         <Dialog open={open} onOpenChange={setOpen}>
-            <DialogContent className="card w-full max-w-4xl max-h-[90vh] flex flex-col">
+            <DialogContent className="card w-full max-w-6xl max-h-[90vh] flex flex-col">
                 <DialogTitle className="sr-only">프로필 설정</DialogTitle>
-                <h1 className="page-title mt-4">⚙️ 프로필 설정</h1>
-                <div className="grid md:grid-cols-2 gap-6 overflow-y-auto p-1">
-                    {/* 기본 정보 카드 */}
+                <h1 className="page-title mt-4">프로필 설정</h1>
+                <div className="grid md:grid-cols-1 gap-6 p-1">
                     <div className="card">
-                        <h2 className="section-title">기본 정보</h2>
                         <div className="space-y-6">
-                            <div>
-                                <label className="block text-sm font-medium text-slate-300 mb-2">이메일</label>
-                                <div className="bg-slate-700/50 rounded-lg px-4 py-3 border border-slate-600">
-                                    <span className="text-slate-200">{user.email}</span>
-                                </div>
-                            </div>
-                            <UsernameForm currentUsername={profile?.username} />
+                            <UsernameForm
+                                currentUsername={profile?.username}
+                                isPending={isUsernamePending}
+                                handleSubmit={handleUsernameSubmit}
+                            />
+                            <AvatarSelector
+                                currentAvatar={profile?.avatar_url}
+                                isPending={isAvatarPending}
+                                handleAvatarClick={handleAvatarClick}
+                            />
                         </div>
-                    </div>
-
-                    {/* 아바타 선택 카드 */}
-                    <div className="card">
-                        <h2 className="section-title">아바타 선택</h2>
-                        <AvatarSelector currentAvatar={profile?.avatar_url} />
                     </div>
                 </div>
 
