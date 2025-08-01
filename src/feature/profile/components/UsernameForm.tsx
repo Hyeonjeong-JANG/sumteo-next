@@ -1,8 +1,6 @@
 'use client';
 
-import toast from 'react-hot-toast';
-import { updateUsernameAction } from '../../../app/(main)/actions';
-import { useTransition } from 'react';
+import { LoadingSpinner } from '@/shared/ui/LoadingSpinner';
 
 export function UsernameForm({ currentUsername, handleSubmit, isPending }: { currentUsername?: string, handleSubmit: (formData: FormData) => void, isPending: boolean }) {
 
@@ -23,14 +21,7 @@ export function UsernameForm({ currentUsername, handleSubmit, isPending }: { cur
                     className="btn-primary p-2 ml-2 whitespace-nowrap min-w-[90px] flex justify-center"
                     disabled={isPending}
                 >
-                    {isPending ? (
-                        <div className="flex items-center justify-center gap-2">
-                            <div className="w-4 h-4 border-2 border-white/80 border-t-transparent rounded-full animate-spin"></div>
-                            <span>저장 중</span>
-                        </div>
-                    ) : (
-                        '저장'
-                    )}
+                    {isPending ? <LoadingSpinner /> : '저장'}
                 </button>
             </div>
 
