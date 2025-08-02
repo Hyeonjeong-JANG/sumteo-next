@@ -82,7 +82,10 @@ export async function endReadingSessionAction(sessionId: string) {
 
     const { error } = await supabase
       .from('reading_sessions')
-      .update({ end_time: new Date().toISOString() })
+      .update({
+        end_time: new Date().toISOString(),
+        is_active: false
+      })
       .eq('id', sessionId)
       .eq('user_id', user.id);
 
@@ -92,4 +95,20 @@ export async function endReadingSessionAction(sessionId: string) {
   } catch (e) {
     return { success: false, message: '세션 종료에 실패했습니다: ' + (e as Error).message };
   }
+}
+
+// 진행 중인 독서 세션 조회
+export async function getActiveReadingSessionAction() {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return null;
+
+  const { data: session } = await supabase
+    .from('reading_sessions')
+    .select('id')
+    .eq('user_id', user.id)
+    .eq('is_active', true)
+    .single();
+
+  return session; // 찾으면 세션 객체, 없으면 null 반환
 }
