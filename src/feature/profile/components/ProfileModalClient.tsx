@@ -22,6 +22,12 @@ export function ProfileModalClient({
     const router = useRouter();
     const [isUsernamePending, startUsernameTransition] = useTransition();
     const [isAvatarPending, startAvatarTransition] = useTransition();
+    
+    // 로컬 상태로 실시간 업데이트
+    const [currentProfile, setCurrentProfile] = useState({
+        username: profile?.username || '독서가',
+        avatar_url: profile?.avatar_url || '/avatars/shakespeare-william.jpg'
+    });
 
     useEffect(() => {
         if (!open) {
@@ -31,19 +37,37 @@ export function ProfileModalClient({
 
     // 닉네임 저장
     const handleUsernameSubmit = (formData: FormData) => {
+        const newUsername = formData.get('username') as string;
+        
         startUsernameTransition(async () => {
+            // 먼저 UI 업데이트
+            setCurrentProfile(prev => ({ ...prev, username: newUsername }));
+            
             const result = await updateUsernameAction(formData);
-            if (result.success) toast.success(result.message);
-            else toast.error(result.message);
+            if (result.success) {
+                toast.success(result.message);
+            } else {
+                // 실패시 롤백
+                setCurrentProfile(prev => ({ ...prev, username: profile?.username || '독서가' }));
+                toast.error(result.message);
+            }
         });
     };
 
     // 아바타 저장
     const handleAvatarClick = (imageUrl: string) => {
         startAvatarTransition(async () => {
+            // 먼저 UI 업데이트
+            setCurrentProfile(prev => ({ ...prev, avatar_url: imageUrl }));
+            
             const result = await updateAvatarAction(imageUrl);
-            if (result.success) toast.success(result.message);
-            else toast.error(result.message);
+            if (result.success) {
+                toast.success(result.message);
+            } else {
+                // 실패시 롤백
+                setCurrentProfile(prev => ({ ...prev, avatar_url: profile?.avatar_url || '/avatars/shakespeare-william.jpg' }));
+                toast.error(result.message);
+            }
         });
     };
 
@@ -64,10 +88,41 @@ export function ProfileModalClient({
                 {/* 모달 콘텐츠 */}
                 <div className="flex-1 overflow-y-auto">
                     <div className="space-y-8">
+                        {/* 현재 프로필 미리보기 */}
                         <div className="card bg-white/5">
                             <h2 className="subsection-title flex items-center gap-2 mb-6">
                                 <span className="text-xl">👤</span>
-                                사용자 정보
+                                현재 프로필
+                            </h2>
+                            <div className="flex items-center gap-6 p-6 bg-white/5 rounded-xl border border-white/10">
+                                <div className="relative">
+                                    <div className="w-20 h-20 rounded-full ring-3 ring-amber-400/50 p-1">
+                                        <img
+                                            src={currentProfile.avatar_url}
+                                            alt="현재 아바타"
+                                            className="w-full h-full rounded-full object-cover transition-all duration-300"
+                                        />
+                                    </div>
+                                    <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-amber-400 rounded-full flex items-center justify-center shadow-lg">
+                                        <span className="text-slate-800 text-xs font-bold">✓</span>
+                                    </div>
+                                </div>
+                                <div className="flex-1">
+                                    <h3 className="text-xl font-bold text-white mb-1 transition-all duration-300">
+                                        {currentProfile.username}
+                                    </h3>
+                                    <p className="text-slate-400 text-sm">
+                                        {user.email}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* 닉네임 변경 */}
+                        <div className="card bg-white/5">
+                            <h2 className="subsection-title flex items-center gap-2 mb-6">
+                                <span className="text-xl">✏️</span>
+                                닉네임 변경
                             </h2>
                             <UsernameForm
                                 currentUsername={profile?.username}
@@ -76,13 +131,14 @@ export function ProfileModalClient({
                             />
                         </div>
 
+                        {/* 아바타 선택 */}
                         <div className="card bg-white/5">
                             <h2 className="subsection-title flex items-center gap-2 mb-6">
                                 <span className="text-xl">🎭</span>
                                 아바타 선택
                             </h2>
                             <AvatarSelector
-                                currentAvatar={profile?.avatar_url}
+                                currentAvatar={currentProfile.avatar_url}
                                 isPending={isAvatarPending}
                                 handleAvatarClick={handleAvatarClick}
                             />
