@@ -1,11 +1,18 @@
 import type { Metadata } from "next";
-import { Noto_Sans_KR } from "next/font/google";
+import { Inter, Noto_Sans_KR } from "next/font/google";
 import { Toaster } from "react-hot-toast";
 import "./globals.css";
 
+const inter = Inter({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700", "800"],
+  variable: "--font-inter",
+});
+
 const notoSansKr = Noto_Sans_KR({
   subsets: ["latin"],
-  weight: ["400", "500", "700"],
+  weight: ["300", "400", "500", "600", "700", "800"],
+  variable: "--font-noto-sans-kr",
 });
 
 export const metadata: Metadata = {
@@ -19,12 +26,22 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ko">
-      <body
-        className={notoSansKr.className}
-      >
+    <html lang="ko" className={`${inter.variable} ${notoSansKr.variable}`}>
+      <body className="font-sans antialiased">
         {children}
-        <Toaster />
+        <Toaster 
+          position="top-right"
+          toastOptions={{
+            duration: 4000,
+            style: {
+              background: 'rgba(30, 41, 59, 0.9)',
+              color: '#f8fafc',
+              border: '1px solid rgba(255, 255, 255, 0.1)',
+              borderRadius: '12px',
+              backdropFilter: 'blur(12px)',
+            },
+          }}
+        />
       </body>
     </html>
   );
